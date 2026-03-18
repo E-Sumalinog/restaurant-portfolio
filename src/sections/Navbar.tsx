@@ -17,6 +17,7 @@ export default function Navbar() {
         <li><a href="#about" className="hover:text-orange-400">About</a></li>
         <li><a href="#reservation" className="hover:text-orange-400">Reservation</a></li>
         <li><a href="#contact" className="hover:text-orange-400">Contact</a></li>
+        <li><a href="/admin" className="hover:text-orange-400 font-semibold">Admin</a></li>
       </ul>
 
       {/* Hamburger Icon for Mobile */}
@@ -75,6 +76,15 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               Contact
+            </a>
+          </li>
+          <li>
+            <a
+                href="/admin"
+                className="hover:text-orange-400"
+                onClick={() => setIsOpen(false)}
+            >
+                Admin
             </a>
           </li>
         </ul>

@@ -1,71 +1,56 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-const menuItems = [
-  {
-    name: "Grilled Steak",
-    price: "$25",
-    image: "/menu1.jpg",
-    description: "Juicy grilled steak with herbs",
-  },
-  {
-    name: "Pasta Carbonara",
-    price: "$18",
-    image: "/menu2.jpg",
-    description: "Creamy pasta with bacon and cheese",
-  },
-  {
-    name: "Fresh Salad",
-    price: "$12",
-    image: "/menu3.jpg",
-    description: "Healthy greens with vinaigrette",
-  },
-  {
-    name: "Chocolate Dessert",
-    price: "$10",
-    image: "/menu4.jpg",
-    description: "Rich chocolate delight",
-  },
-];
+import menuItems from "@/data/menu";
+import { useState } from "react";
+import MenuCard from "@/components/MenuCard";
+import { useMenu } from "@/context/MenuContext";
 
 export default function Menu() {
+    const { menu } = useMenu();
+    const categories = ["All", ...new Set(menuItems.map(item => item.category))];
+    const [activeCategory, setActiveCategory] = useState("All");
+    const [searchQuery, setSearchQuery] = useState("");
+    const filteredItems = menuItems.filter(item => activeCategory === "All" ? 
+    true : item.category === activeCategory).filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+
   return (
     <section id="menu" className="bg-black text-white py-20 px-6">
       <div className="max-w-7xl mx-auto text-center">
         
         {/* Title */}
         <h2 className="text-4xl font-bold mb-12">Our Menu</h2>
-
-        {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {menuItems.map((item, index) => (
-            <motion.div
-              key={index}
-              className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-48 object-cover"
-              />
-
-              <div className="p-4 text-left">
-                <h3 className="text-xl font-semibold">{item.name}</h3>
-                <p className="text-gray-400 text-sm mb-2">
-                  {item.description}
-                </p>
-                <span className="text-orange-400 font-bold">
-                  {item.price}
-                </span>
-              </div>
-            </motion.div>
-          ))}
+        <div className="flex justify-center mb-6">
+            <input
+                type="text"
+                placeholder="Search menu..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full max-w-md px-4 py-2 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
         </div>
+        <div className="flex flex-wrap justify-center gap-4 mb-10">
+            {categories.map((category) => (
+                <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full border transition ${
+                    activeCategory === category
+                    ? "bg-orange-500 text-white border-orange-500"
+                    : "border-gray-600 text-gray-300 hover:bg-gray-800"
+                }`}
+                >
+                {category}
+                </button>
+            ))}
+        </div>
+        {/* Grid */}
+        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredItems.map((item, index) => (
+            <MenuCard key={item.id} item={item} />
+          ))}
+        </motion.div>
 
       </div>
     </section>
